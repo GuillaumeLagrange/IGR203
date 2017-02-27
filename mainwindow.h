@@ -26,7 +26,7 @@ public slots:
     void printDefrost();
     void printHour();
     void printMinute();
-    void updateVial(int i);
+    void updateDial(int i);
 
 private:
     Ui::MainWindow *ui;
@@ -46,6 +46,8 @@ private:
     void setUpStateChart(); // Sets up states and transitions
     void setUpDial(); // Sets up the dial actions
     int timer;
+    QString currentMode;
+    int currentPower;
 };
 
 #endif // MAINWINDOW_H

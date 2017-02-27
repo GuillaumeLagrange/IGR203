@@ -10,7 +10,9 @@ MainWindow::MainWindow(QWidget *parent) :
     stateMachine = new QStateMachine();
     setUpStateChart();
     setUpDial();
-    timer = 0;
+    timer = 60;
+    currentMode = "Ondes";
+    currentPower = 0;
 }
 
 MainWindow::~MainWindow()
@@ -77,6 +79,13 @@ void MainWindow::setUpStateChart() {
    addTrans(hourSettingState, minuteSettingState, ui->clockButton, SIGNAL(clicked()));
    addTrans(minuteSettingState, idleState, ui->clockButton, SIGNAL(clicked()));
 
+   /* Idle to timer transition by touching the dial */
+   addTrans(idleState, timerSelectState, ui->dial, SIGNAL(valueChanged(int)));
+   addTrans(timerSelectState, cookingState, ui->startButton, SIGNAL(clicked()));
+
+   /* Transition from idle to cooking just by pressing start */
+   addTrans(idleState, cookingState, ui->startButton, SIGNAL(clicked()));
+
    stateMachine->addState(parentState);
    stateMachine->setInitialState(parentState);
    parentState->setInitialState(idleState);
@@ -87,29 +96,35 @@ void MainWindow::setUpDial()
 {
    QDial * dial = ui->dial;
 
-   QObject::connect(dial, SIGNAL(valueChanged(int)), this, SLOT(updateVial(int)));
+   QObject::connect(dial, SIGNAL(valueChanged(int)), this, SLOT(updateDial(int)));
 }
 
 void MainWindow::printIdle() {
+    ui->dial->setValue(0);
+    /* TODO : print current time */
     ui->screen->setText("Idle");
 }
 
 void MainWindow::printMode() {
-    ui->screen->setText("Mode");
+    ui->dial->setValue(0);
+    ui->screen->setText("Mode : " + currentMode);
 }
 
 void MainWindow::printModeTimer() {
-    //ui->screen->setText("Timer from mode");
-    timer = 60;
+    ui->dial->setValue(0);
+    timer = ui->dial->value();
     ui->screen->setText(QString::number(timer));
 }
 
 void MainWindow::printPower() {
-    ui->screen->setText("Power");
+    ui->dial->setValue(0);
+    ui->screen->setText("Power : " + QString::number(currentPower) + "%");
 }
 
 void MainWindow::printPowerTimer() {
-    ui->screen->setText("Timer from power");
+    ui->dial->setValue(0);
+    updateDial(ui->dial->value());
+    ui->screen->setText(QString::number(timer));
 }
 
 void MainWindow::printDefrost() {
@@ -117,7 +132,7 @@ void MainWindow::printDefrost() {
 }
 
 void MainWindow::printCooking() {
-    ui->screen->setText("Cooking");
+    ui->screen->setText("Cooking, timer is " + QString::number(timer));
 }
 
 void MainWindow::printHour() {
@@ -128,7 +143,39 @@ void MainWindow::printMinute() {
     ui->screen->setText("Setting minute");
 }
 
-void MainWindow::updateVial(int i) {
-    timer = i;
-    ui->screen->setText(QString::number(timer));
+void MainWindow::updateDial(int i) {
+    /* States where the dial updates the timer */
+    if (stateMachine->configuration().contains(timerSelectState) |
+        stateMachine->configuration().contains(powerTimerState)  |
+        stateMachine->configuration().contains(modeTimerState)) {
+        timer = i;
+        ui->screen->setText(QString::number(timer));
+    }
+
+    /* State where the dial updates the mode selection */
+    if (stateMachine->configuration().contains(modeSelectState)) {
+        switch(ui->dial->value()/25) {
+        case 0:
+            currentMode = "Ondes";
+            break;
+        case 1:
+            currentMode = "Grill";
+            break;
+        case 2:
+            currentMode = "Grill & ondes";
+            break;
+        case 3:
+            currentMode = "Je fais le café aussi ?";
+        }
+        ui->screen->setText(currentMode);
+    }
+
+    /* State where the dial updates the power level */
+    if (stateMachine->configuration().contains(powerSelectState)) {
+        currentPower = ui->dial->value() + 1;
+        if (currentPower < 100)
+            ui->screen->setText("Power : " + QString::number(currentPower) + " %");
+        else
+            ui->screen->setText("IT'S OVER NINE THOUSAND !");
+    }
 }
