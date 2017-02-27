@@ -11,8 +11,10 @@ MainWindow::MainWindow(QWidget *parent) :
     setUpStateChart();
     setUpDial();
     timer = 60;
-    currentMode = "Ondes";
+    currentMode = "Microwaves";
     currentPower = 0;
+    hour = 0;
+    minute = 0;
 }
 
 MainWindow::~MainWindow()
@@ -128,7 +130,9 @@ void MainWindow::printPowerTimer() {
 }
 
 void MainWindow::printDefrost() {
-    ui->screen->setText("Defrost");
+    ui->dial->setValue(0);
+    timer = ui->dial->value();
+    ui->screen->setText("Weight : " + QString::number(50 * timer) + " g");
 }
 
 void MainWindow::printCooking() {
@@ -156,13 +160,13 @@ void MainWindow::updateDial(int i) {
     if (stateMachine->configuration().contains(modeSelectState)) {
         switch(ui->dial->value()/25) {
         case 0:
-            currentMode = "Ondes";
+            currentMode = "Microwaves";
             break;
         case 1:
             currentMode = "Grill";
             break;
         case 2:
-            currentMode = "Grill & ondes";
+            currentMode = "Grill & microwaves";
             break;
         case 3:
             currentMode = "Je fais le café aussi ?";
@@ -177,5 +181,11 @@ void MainWindow::updateDial(int i) {
             ui->screen->setText("Power : " + QString::number(currentPower) + " %");
         else
             ui->screen->setText("IT'S OVER NINE THOUSAND !");
+    }
+
+    /* State where the dial updates the weight of food to defrost */
+    if (stateMachine->configuration().contains(defrostState)) {
+        timer = ui->dial->value() * 10;
+        ui->screen->setText("Weight : " + QString::number(5 * timer) + " g");
     }
 }

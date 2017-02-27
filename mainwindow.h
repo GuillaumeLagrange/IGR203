@@ -48,6 +48,8 @@ private:
     int timer;
     QString currentMode;
     int currentPower;
+    int hour;
+    int minute;
 };
 
 #endif // MAINWINDOW_H
