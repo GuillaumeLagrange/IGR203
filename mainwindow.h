@@ -19,6 +19,7 @@ public:
 public slots:
     void printIdle();
     void printMode();
+    void printTimer();
 
 private:
     Ui::MainWindow *ui;

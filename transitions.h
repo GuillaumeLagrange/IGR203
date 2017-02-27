@@ -233,7 +233,3 @@ inline UserEventTransition* addUserTrans(QState* from, QState* to, int eventType
 }
 
 #endif // TRANSITION_H#ifndef TRANSITIONS_H
-#define TRANSITIONS_H
-
-#endif // TRANSITIONS_H
-

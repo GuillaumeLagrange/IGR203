@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "Transitions.h"
+#include "transitions.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -30,8 +30,12 @@ void MainWindow::setUpStateChart() {
 
    QObject::connect(idleState, SIGNAL(entered()), this, SLOT(printIdle()));
    QObject::connect(modeSelectState, SIGNAL(entered()), this, SLOT(printMode()));
+   QObject::connect(timerSelectState, SIGNAL(entered()), this, SLOT(printTimer()));
 
+   addTrans(parentState, idleState, ui->stopButton, SIGNAL(clicked()));
    addTrans(idleState, modeSelectState, ui->modeButton, SIGNAL(clicked()));
+   addTrans(idleState, modeSelectState, ui->modeButton, SIGNAL(clicked()));
+   addTrans(modeSelectState, timerSelectState, ui->modeButton, SIGNAL(clicked()));
 
    stateMachine->addState(parentState);
    stateMachine->setInitialState(parentState);
@@ -45,4 +49,8 @@ void MainWindow::printIdle() {
 
 void MainWindow::printMode() {
     ui->screen->setText("Mode select");
+}
+
+void MainWindow::printTimer() {
+    ui->screen->setText("Timer");
 }
