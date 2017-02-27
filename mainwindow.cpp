@@ -35,9 +35,12 @@ void MainWindow::setUpStateChart() {
    QObject::connect(idleState, SIGNAL(entered()), this, SLOT(printIdle()));
    QObject::connect(modeSelectState, SIGNAL(entered()), this, SLOT(printMode()));
    QObject::connect(modeTimerState, SIGNAL(entered()), this, SLOT(printModeTimer()));
-   QObject::connect(cookingState, SIGNAL(entered()), this, SLOT(printCooking()));
    QObject::connect(powerSelectState, SIGNAL(entered()), this, SLOT(printPower()));
    QObject::connect(powerTimerState, SIGNAL(entered()), this, SLOT(printPowerTimer()));
+   QObject::connect(defrostState, SIGNAL(entered()), this, SLOT(printDefrost()));
+   QObject::connect(cookingState, SIGNAL(entered()), this, SLOT(printCooking()));
+   QObject::connect(hourSettingState, SIGNAL(entered()), this, SLOT(printHour()));
+   QObject::connect(minuteSettingState, SIGNAL(entered()), this, SLOT(printMinute()));
 
    /* Stop transition for parent state */
    addTrans(parentState, idleState, ui->stopButton, SIGNAL(clicked()));
@@ -51,6 +54,15 @@ void MainWindow::setUpStateChart() {
    addTrans(idleState, powerSelectState, ui->powerButton, SIGNAL(clicked()));
    addTrans(powerSelectState, powerTimerState, ui->powerButton, SIGNAL(clicked()));
    addTrans(powerTimerState, cookingState, ui->powerButton, SIGNAL(clicked()));
+
+   /* Defrost transitions */
+   addTrans(idleState, defrostState, ui->defrostButton, SIGNAL(clicked()));
+   addTrans(defrostState, cookingState, ui->defrostButton, SIGNAL(clicked()));
+
+   /* Clock settings transitions */
+   addTrans(idleState, hourSettingState, ui->clockButton, SIGNAL(clicked()));
+   addTrans(hourSettingState, minuteSettingState, ui->clockButton, SIGNAL(clicked()));
+   addTrans(minuteSettingState, idleState, ui->clockButton, SIGNAL(clicked()));
 
    stateMachine->addState(parentState);
    stateMachine->setInitialState(parentState);
@@ -78,6 +90,18 @@ void MainWindow::printPowerTimer() {
     ui->screen->setText("Timer from power");
 }
 
+void MainWindow::printDefrost() {
+    ui->screen->setText("Defrost");
+}
+
 void MainWindow::printCooking() {
     ui->screen->setText("Cooking");
+}
+
+void MainWindow::printHour() {
+    ui->screen->setText("Setting hour");
+}
+
+void MainWindow::printMinute() {
+    ui->screen->setText("Setting minute");
 }

@@ -23,6 +23,9 @@ public slots:
     void printCooking();
     void printPower();
     void printPowerTimer();
+    void printDefrost();
+    void printHour();
+    void printMinute();
 
 private:
     Ui::MainWindow *ui;
