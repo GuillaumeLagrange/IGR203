@@ -19,7 +19,10 @@ public:
 public slots:
     void printIdle();
     void printMode();
-    void printTimer();
+    void printModeTimer();
+    void printCooking();
+    void printPower();
+    void printPowerTimer();
 
 private:
     Ui::MainWindow *ui;
