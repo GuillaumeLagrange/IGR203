@@ -16,6 +16,10 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
+public slots:
+    void printIdle();
+    void printMode();
+
 private:
     Ui::MainWindow *ui;
     QStateMachine * stateMachine;
