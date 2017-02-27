@@ -26,11 +26,26 @@ public slots:
     void printDefrost();
     void printHour();
     void printMinute();
+    void updateVial(int i);
 
 private:
     Ui::MainWindow *ui;
     QStateMachine * stateMachine;
-    void setUpStateChart();
+    QState * parentState;
+    QState * idleState;
+    QState * minuteSettingState;
+    QState * hourSettingState;
+    QState * powerSelectState;
+    QState * powerTimerState;
+    QState * modeSelectState;
+    QState * modeTimerState;
+    QState * timerSelectState;
+    QState * defrostState;
+    QState * cookingState;
+
+    void setUpStateChart(); // Sets up states and transitions
+    void setUpDial(); // Sets up the dial actions
+    int timer;
 };
 
 #endif // MAINWINDOW_H

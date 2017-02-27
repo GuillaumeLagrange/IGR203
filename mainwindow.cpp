@@ -9,27 +9,40 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     stateMachine = new QStateMachine();
     setUpStateChart();
+    setUpDial();
+    timer = 0;
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
     delete stateMachine;
+    delete parentState;
+    delete idleState;
+    delete minuteSettingState;
+    delete hourSettingState;
+    delete powerSelectState;
+    delete powerTimerState;
+    delete modeSelectState;
+    delete modeTimerState;
+    delete timerSelectState;
+    delete defrostState;
+    delete cookingState;
 }
 
 
 void MainWindow::setUpStateChart() {
-   QState * parentState         = new QState(); // Contains the stop behavior for all
-   QState * idleState           = new QState(parentState);
-   QState * minuteSettingState  = new QState(parentState);
-   QState * hourSettingState    = new QState(parentState);
-   QState * powerSelectState    = new QState(parentState);
-   QState * powerTimerState     = new QState(parentState);
-   QState * modeSelectState     = new QState(parentState);
-   QState * modeTimerState      = new QState(parentState);
-   QState * timerSelectState    = new QState(parentState);
-   QState * defrostState        = new QState(parentState);
-   QState * cookingState        = new QState(parentState);
+   parentState         = new QState(); // Contains the stop behavior for all
+   idleState           = new QState(parentState);
+   minuteSettingState  = new QState(parentState);
+   hourSettingState    = new QState(parentState);
+   powerSelectState    = new QState(parentState);
+   powerTimerState     = new QState(parentState);
+   modeSelectState     = new QState(parentState);
+   modeTimerState      = new QState(parentState);
+   timerSelectState    = new QState(parentState);
+   defrostState        = new QState(parentState);
+   cookingState        = new QState(parentState);
 
    /* Slots to be called when entering states */
    QObject::connect(idleState, SIGNAL(entered()), this, SLOT(printIdle()));
@@ -70,6 +83,13 @@ void MainWindow::setUpStateChart() {
    stateMachine->start();
 }
 
+void MainWindow::setUpDial()
+{
+   QDial * dial = ui->dial;
+
+   QObject::connect(dial, SIGNAL(valueChanged(int)), this, SLOT(updateVial(int)));
+}
+
 void MainWindow::printIdle() {
     ui->screen->setText("Idle");
 }
@@ -79,7 +99,9 @@ void MainWindow::printMode() {
 }
 
 void MainWindow::printModeTimer() {
-    ui->screen->setText("Timer from mode");
+    //ui->screen->setText("Timer from mode");
+    timer = 60;
+    ui->screen->setText(QString::number(timer));
 }
 
 void MainWindow::printPower() {
@@ -104,4 +126,9 @@ void MainWindow::printHour() {
 
 void MainWindow::printMinute() {
     ui->screen->setText("Setting minute");
+}
+
+void MainWindow::updateVial(int i) {
+    timer = i;
+    ui->screen->setText(QString::number(timer));
 }
