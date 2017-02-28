@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include <QStateMachine>
+#include <QTimer>
 
 namespace Ui {
 class MainWindow;
@@ -26,7 +27,9 @@ public slots:
     void printDefrost();
     void printHour();
     void printMinute();
-    void updateDial(int i);
+    void updateDial(int i);    // Handles dial interactions
+    void updateCookingTimer(); // Handles timeouts of cookingTimer
+    void updateClockTimer();   // Handles timeouts of clockTimer
 
 private:
     Ui::MainWindow *ui;
@@ -43,14 +46,22 @@ private:
     QState * defrostState;
     QState * cookingState;
 
+    /* These functions are called in the constructor */
     void setUpStateChart(); // Sets up states and transitions
     void setUpDial(); // Sets up the dial actions
-    inline QString addZeroes(int i);
+    void setUpCookingTimer(); // Sets up the cooking timer
+    void setUpClockTimer(); // Sets up the clock timer
+
+    inline QString addZeroes(int i); // Sets time to the right format, ugly
+
+    /* Attributes */
     int timer;
     QString currentMode;
     int currentPower;
     int hour;
     int minute;
+    QTimer * cookingTimer;
+    QTimer * clockTimer;
 };
 
 #endif // MAINWINDOW_H

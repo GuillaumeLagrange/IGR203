@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    stateMachine = new QStateMachine();
+    stateMachine = new QStateMachine(this);
     setUpStateChart();
     setUpDial();
     timer = 60;
@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent) :
     currentPower = 0;
     hour = 0;
     minute = 0;
+    setUpCookingTimer();
 }
 
 MainWindow::~MainWindow()
@@ -32,11 +33,14 @@ MainWindow::~MainWindow()
     delete timerSelectState;
     delete defrostState;
     delete cookingState;
+    delete cookingTimer;
+    delete clockTimer;
 }
 
 
-void MainWindow::setUpStateChart() {
-   parentState         = new QState(); // Contains the stop behavior for all
+void MainWindow::setUpStateChart()
+{
+   parentState         = new QState(stateMachine); // Contains the stop behavior for all
    idleState           = new QState(parentState);
    minuteSettingState  = new QState(parentState);
    hourSettingState    = new QState(parentState);
@@ -88,17 +92,30 @@ void MainWindow::setUpStateChart() {
    /* Transition from idle to cooking just by pressing start */
    addTrans(idleState, cookingState, ui->startButton, SIGNAL(clicked()));
 
-   stateMachine->addState(parentState);
    stateMachine->setInitialState(parentState);
    parentState->setInitialState(idleState);
    stateMachine->start();
 }
 
+void MainWindow::setUpCookingTimer()
+{
+    /* Timeout for cooking timer is one second */
+    cookingTimer->setInterval(1000);
+    QObject::connect(cookingTimer, SIGNAL(timeout()), this, SLOT(updateCookingTimer());
+}
+
+void MainWindow::setUpClockTimer()
+{
+    /* Timeout for cooking timer is one minute */
+    clockTimer->setInterval(60 * 1000);
+    QObject::connect(clockTimer, SIGNAL(timeout()), this, SLOT(updateClockTimer());
+}
+
 void MainWindow::setUpDial()
 {
-   QDial * dial = ui->dial;
+    QDial * dial = ui->dial;
 
-   QObject::connect(dial, SIGNAL(valueChanged(int)), this, SLOT(updateDial(int)));
+    QObject::connect(dial, SIGNAL(valueChanged(int)), this, SLOT(updateDial(int)));
 }
 
 void MainWindow::printIdle() {
