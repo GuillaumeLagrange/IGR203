@@ -42,61 +42,61 @@ MainWindow::~MainWindow()
 
 void MainWindow::setUpStateChart()
 {
-   parentState         = new QState(stateMachine); // Contains the stop behavior for all
-   idleState           = new QState(parentState);
-   minuteSettingState  = new QState(parentState);
-   hourSettingState    = new QState(parentState);
-   powerSelectState    = new QState(parentState);
-   powerTimerState     = new QState(parentState);
-   modeSelectState     = new QState(parentState);
-   modeTimerState      = new QState(parentState);
-   timerSelectState    = new QState(parentState);
-   defrostState        = new QState(parentState);
-   cookingState        = new QState(parentState);
+    parentState         = new QState(stateMachine); // Contains the stop behavior for all
+    idleState           = new QState(parentState);
+    minuteSettingState  = new QState(parentState);
+    hourSettingState    = new QState(parentState);
+    powerSelectState    = new QState(parentState);
+    powerTimerState     = new QState(parentState);
+    modeSelectState     = new QState(parentState);
+    modeTimerState      = new QState(parentState);
+    timerSelectState    = new QState(parentState);
+    defrostState        = new QState(parentState);
+    cookingState        = new QState(parentState);
 
-   /* Slots to be called when entering states */
-   QObject::connect(idleState, SIGNAL(entered()), this, SLOT(printIdle()));
-   QObject::connect(modeSelectState, SIGNAL(entered()), this, SLOT(printMode()));
-   QObject::connect(modeTimerState, SIGNAL(entered()), this, SLOT(printModeTimer()));
-   QObject::connect(powerSelectState, SIGNAL(entered()), this, SLOT(printPower()));
-   QObject::connect(powerTimerState, SIGNAL(entered()), this, SLOT(printPowerTimer()));
-   QObject::connect(defrostState, SIGNAL(entered()), this, SLOT(printDefrost()));
-   QObject::connect(cookingState, SIGNAL(entered()), this, SLOT(printCooking()));
-   QObject::connect(hourSettingState, SIGNAL(entered()), this, SLOT(printHour()));
-   QObject::connect(minuteSettingState, SIGNAL(entered()), this, SLOT(printMinute()));
+    /* Slots to be called when entering states */
+    QObject::connect(idleState, SIGNAL(entered()), this, SLOT(printIdle()));
+    QObject::connect(modeSelectState, SIGNAL(entered()), this, SLOT(printMode()));
+    QObject::connect(modeTimerState, SIGNAL(entered()), this, SLOT(printModeTimer()));
+    QObject::connect(powerSelectState, SIGNAL(entered()), this, SLOT(printPower()));
+    QObject::connect(powerTimerState, SIGNAL(entered()), this, SLOT(printPowerTimer()));
+    QObject::connect(defrostState, SIGNAL(entered()), this, SLOT(printDefrost()));
+    QObject::connect(cookingState, SIGNAL(entered()), this, SLOT(printCooking()));
+    QObject::connect(hourSettingState, SIGNAL(entered()), this, SLOT(printHour()));
+    QObject::connect(minuteSettingState, SIGNAL(entered()), this, SLOT(printMinute()));
 
-   /* Stop transition for parent state */
-   addTrans(parentState, idleState, ui->stopButton, SIGNAL(clicked()));
+    /* Stop transition for parent state */
+    addTrans(parentState, idleState, ui->stopButton, SIGNAL(clicked()));
 
-   /* Mode select transitions */
-   addTrans(idleState, modeSelectState, ui->modeButton, SIGNAL(clicked()));
-   addTrans(modeSelectState, modeTimerState, ui->modeButton, SIGNAL(clicked()));
-   addTrans(modeTimerState, cookingState, ui->modeButton, SIGNAL(clicked()));
+    /* Mode select transitions */
+    addTrans(idleState, modeSelectState, ui->modeButton, SIGNAL(clicked()));
+    addTrans(modeSelectState, modeTimerState, ui->modeButton, SIGNAL(clicked()));
+    addTrans(modeTimerState, cookingState, ui->modeButton, SIGNAL(clicked()));
 
-   /* Power select transitions */
-   addTrans(idleState, powerSelectState, ui->powerButton, SIGNAL(clicked()));
-   addTrans(powerSelectState, powerTimerState, ui->powerButton, SIGNAL(clicked()));
-   addTrans(powerTimerState, cookingState, ui->powerButton, SIGNAL(clicked()));
+    /* Power select transitions */
+    addTrans(idleState, powerSelectState, ui->powerButton, SIGNAL(clicked()));
+    addTrans(powerSelectState, powerTimerState, ui->powerButton, SIGNAL(clicked()));
+    addTrans(powerTimerState, cookingState, ui->powerButton, SIGNAL(clicked()));
 
-   /* Defrost transitions */
-   addTrans(idleState, defrostState, ui->defrostButton, SIGNAL(clicked()));
-   addTrans(defrostState, cookingState, ui->defrostButton, SIGNAL(clicked()));
+    /* Defrost transitions */
+    addTrans(idleState, defrostState, ui->defrostButton, SIGNAL(clicked()));
+    addTrans(defrostState, cookingState, ui->defrostButton, SIGNAL(clicked()));
 
-   /* Clock settings transitions */
-   addTrans(idleState, hourSettingState, ui->clockButton, SIGNAL(clicked()));
-   addTrans(hourSettingState, minuteSettingState, ui->clockButton, SIGNAL(clicked()));
-   addTrans(minuteSettingState, idleState, ui->clockButton, SIGNAL(clicked()));
+    /* Clock settings transitions */
+    addTrans(idleState, hourSettingState, ui->clockButton, SIGNAL(clicked()));
+    addTrans(hourSettingState, minuteSettingState, ui->clockButton, SIGNAL(clicked()));
+    addTrans(minuteSettingState, idleState, ui->clockButton, SIGNAL(clicked()));
 
-   /* Idle to timer transition by touching the dial */
-   addTrans(idleState, timerSelectState, ui->dial, SIGNAL(valueChanged(int)));
-   addTrans(timerSelectState, cookingState, ui->startButton, SIGNAL(clicked()));
+    /* Idle to timer transition by touching the dial */
+    addTrans(idleState, timerSelectState, ui->dial, SIGNAL(valueChanged(int)));
+    addTrans(timerSelectState, cookingState, ui->startButton, SIGNAL(clicked()));
 
-   /* Transition from idle to cooking just by pressing start */
-   addTrans(idleState, cookingState, ui->startButton, SIGNAL(clicked()));
+    /* Transition from idle to cooking just by pressing start */
+    addTrans(idleState, cookingState, ui->startButton, SIGNAL(clicked()));
 
-   stateMachine->setInitialState(parentState);
-   parentState->setInitialState(idleState);
-   stateMachine->start();
+    stateMachine->setInitialState(parentState);
+    parentState->setInitialState(idleState);
+    stateMachine->start();
 }
 
 void MainWindow::setUpCookingTimer()
@@ -119,7 +119,7 @@ void MainWindow::setUpClockTimer()
 void MainWindow::setUpCookingTimeoutTimer()
 {
     cookingTimeoutTimer = new QTimer(this);
-    QObject::connect(cookingTimeoutTimer, SIGNAL(timeout()), this, SLOT(printIdle()));
+    addTrans(cookingState, idleState, cookingTimeoutTimer, SIGNAL(timeout()));
 }
 
 void MainWindow::setUpDial()
