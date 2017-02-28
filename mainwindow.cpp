@@ -261,5 +261,13 @@ void MainWindow::updateCookingTimer()
 
 void MainWindow::updateClockTimer()
 {
-
+    if (!(stateMachine->configuration().contains(hourSettingState) |
+          stateMachine->configuration().contains(minuteSettingState))) {
+        if (minute++ == 59) {
+            minute =0;
+            if (hour ++ == 23)
+                hour = 0;
+        }
+        printIdle();
+    }
 }
