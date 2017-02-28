@@ -103,8 +103,11 @@ void MainWindow::setUpDial()
 
 void MainWindow::printIdle() {
     ui->dial->setValue(0);
-    /* TODO : print current time */
-    ui->screen->setText("Idle");
+    /* Did not know how to do this properly so it's very ugly, sorry */
+    QString hourString = addZeroes(hour);
+    QString minuteString = addZeroes(minute);
+
+    ui->screen->setText(hourString + " : " + minuteString);
 }
 
 void MainWindow::printMode() {
@@ -120,6 +123,7 @@ void MainWindow::printModeTimer() {
 
 void MainWindow::printPower() {
     ui->dial->setValue(0);
+    currentPower = 0;
     ui->screen->setText("Power : " + QString::number(currentPower) + "%");
 }
 
@@ -140,11 +144,15 @@ void MainWindow::printCooking() {
 }
 
 void MainWindow::printHour() {
-    ui->screen->setText("Setting hour");
+    ui->dial->setValue(99 * hour/23);
+    QString hourString = addZeroes(hour);
+    ui->screen->setText("Setting hour : " + hourString);
 }
 
 void MainWindow::printMinute() {
-    ui->screen->setText("Setting minute");
+    ui->dial->setValue(99 * minute/59);
+    QString minuteString = addZeroes(minute);
+    ui->screen->setText("Setting minute : " + minuteString);
 }
 
 void MainWindow::updateDial(int i) {
@@ -171,7 +179,7 @@ void MainWindow::updateDial(int i) {
         case 3:
             currentMode = "Je fais le café aussi ?";
         }
-        ui->screen->setText(currentMode);
+        ui->screen->setText("Mode : " + currentMode);
     }
 
     /* State where the dial updates the power level */
@@ -188,4 +196,30 @@ void MainWindow::updateDial(int i) {
         timer = ui->dial->value() * 10;
         ui->screen->setText("Weight : " + QString::number(5 * timer) + " g");
     }
+
+    /* State where the dial updates the hours */
+    if (stateMachine->configuration().contains(hourSettingState)) {
+        hour = ui->dial->value() * 24/99;
+        if (hour == 24)
+            hour --;
+        QString hourString = addZeroes(hour);
+        ui->screen->setText("Setting hour : " + hourString);
+    }
+
+    /* State where the dial updates the hours */
+    if (stateMachine->configuration().contains(minuteSettingState)) {
+        minute = ui->dial->value() * 60/99;
+        if (minute == 60)
+            minute --;
+        QString minuteString = addZeroes(minute);
+        ui->screen->setText("Setting minute : " + minuteString);
+    }
+}
+
+inline QString MainWindow::addZeroes(int i) {
+    QString str = QString::number(i);
+    if (i < 10)
+        str = "0" + str;
+
+    return str;
 }

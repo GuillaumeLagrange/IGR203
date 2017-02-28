@@ -45,6 +45,7 @@ private:
 
     void setUpStateChart(); // Sets up states and transitions
     void setUpDial(); // Sets up the dial actions
+    inline QString addZeroes(int i);
     int timer;
     QString currentMode;
     int currentPower;
