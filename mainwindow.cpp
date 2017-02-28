@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
     hour = 0;
     minute = 0;
     setUpCookingTimer();
+    setUpClockTimer();
 }
 
 MainWindow::~MainWindow()
@@ -99,16 +100,19 @@ void MainWindow::setUpStateChart()
 
 void MainWindow::setUpCookingTimer()
 {
+    cookingTimer = new QTimer();
     /* Timeout for cooking timer is one second */
     cookingTimer->setInterval(1000);
-    QObject::connect(cookingTimer, SIGNAL(timeout()), this, SLOT(updateCookingTimer());
+    QObject::connect(cookingTimer, SIGNAL(timeout()), this, SLOT(updateCookingTimer()));
 }
 
 void MainWindow::setUpClockTimer()
 {
+    clockTimer = new QTimer();
     /* Timeout for cooking timer is one minute */
     clockTimer->setInterval(60 * 1000);
-    QObject::connect(clockTimer, SIGNAL(timeout()), this, SLOT(updateClockTimer());
+    QObject::connect(clockTimer, SIGNAL(timeout()), this, SLOT(updateClockTimer()));
+    clockTimer->start();
 }
 
 void MainWindow::setUpDial()
@@ -120,6 +124,8 @@ void MainWindow::setUpDial()
 
 void MainWindow::printIdle() {
     ui->dial->setValue(0);
+    timer = 60;
+    cookingTimer->stop();
     /* Did not know how to do this properly so it's very ugly, sorry */
     QString hourString = addZeroes(hour);
     QString minuteString = addZeroes(minute);
@@ -157,6 +163,7 @@ void MainWindow::printDefrost() {
 }
 
 void MainWindow::printCooking() {
+    cookingTimer->start();
     ui->screen->setText("Cooking, timer is " + QString::number(timer));
 }
 
@@ -239,4 +246,20 @@ inline QString MainWindow::addZeroes(int i) {
         str = "0" + str;
 
     return str;
+}
+
+void MainWindow::updateCookingTimer()
+{
+    timer --;
+    if (timer > 0)
+        ui->screen->setText("Cooking, timer is " + QString::number(timer));
+    else {
+        cookingTimer->stop();
+        ui->screen->setText("BEEP BEEP BEEP");
+    }
+}
+
+void MainWindow::updateClockTimer()
+{
+
 }

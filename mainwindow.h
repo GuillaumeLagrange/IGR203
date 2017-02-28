@@ -18,6 +18,7 @@ public:
     ~MainWindow();
 
 public slots:
+    /* These functions are called when the machine enters in each state */
     void printIdle();
     void printMode();
     void printModeTimer();
@@ -27,6 +28,7 @@ public slots:
     void printDefrost();
     void printHour();
     void printMinute();
+
     void updateDial(int i);    // Handles dial interactions
     void updateCookingTimer(); // Handles timeouts of cookingTimer
     void updateClockTimer();   // Handles timeouts of clockTimer
