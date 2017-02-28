@@ -17,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent) :
     minute = 0;
     setUpCookingTimer();
     setUpClockTimer();
+    setUpCookingTimeoutTimer();
 }
 
 MainWindow::~MainWindow()
@@ -100,7 +101,7 @@ void MainWindow::setUpStateChart()
 
 void MainWindow::setUpCookingTimer()
 {
-    cookingTimer = new QTimer();
+    cookingTimer = new QTimer(this);
     /* Timeout for cooking timer is one second */
     cookingTimer->setInterval(1000);
     QObject::connect(cookingTimer, SIGNAL(timeout()), this, SLOT(updateCookingTimer()));
@@ -108,11 +109,17 @@ void MainWindow::setUpCookingTimer()
 
 void MainWindow::setUpClockTimer()
 {
-    clockTimer = new QTimer();
+    clockTimer = new QTimer(this);
     /* Timeout for cooking timer is one minute */
     clockTimer->setInterval(60 * 1000);
     QObject::connect(clockTimer, SIGNAL(timeout()), this, SLOT(updateClockTimer()));
     clockTimer->start();
+}
+
+void MainWindow::setUpCookingTimeoutTimer()
+{
+    cookingTimeoutTimer = new QTimer(this);
+    QObject::connect(cookingTimeoutTimer, SIGNAL(timeout()), this, SLOT(printIdle()));
 }
 
 void MainWindow::setUpDial()
@@ -164,6 +171,7 @@ void MainWindow::printDefrost() {
 
 void MainWindow::printCooking() {
     cookingTimer->start();
+    cookingTimeoutTimer->start((timer + 5)* 1000);
     ui->screen->setText("Cooking, timer is " + QString::number(timer));
 }
 

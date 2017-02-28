@@ -53,6 +53,7 @@ private:
     void setUpDial(); // Sets up the dial actions
     void setUpCookingTimer(); // Sets up the cooking timer
     void setUpClockTimer(); // Sets up the clock timer
+    void setUpCookingTimeoutTimer(); // Sets up the timeout timer
 
     inline QString addZeroes(int i); // Sets time to the right format, ugly
 
@@ -64,6 +65,7 @@ private:
     int minute;
     QTimer * cookingTimer;
     QTimer * clockTimer;
+    QTimer * cookingTimeoutTimer;
 };
 
 #endif // MAINWINDOW_H
