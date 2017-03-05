@@ -1,6 +1,9 @@
 # IGR203
 ## Guillaume Lagrange
 
+QT version : 5.5.1
+A priori fonctionne sur les machines de l'école (testé en ssh).
+
 Tout a été traité, j'ai juste un soucis que je ne comprends pas : il faut
 parfois rappuyer sur stop malgré le fait que l'on soit dans l'état idle pour
 continuer les transitions normales, cela intervient quand on a touché au dial
