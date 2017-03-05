@@ -1,4 +1,5 @@
 # IGR203
+## Guillaume Lagrange
 
 Tout a été traité, j'ai juste un soucis que je ne comprends pas : il faut
 parfois rappuyer sur stop malgré le fait que l'on soit dans l'état idle pour
